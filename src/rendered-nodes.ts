@@ -1,8 +1,7 @@
 ﻿import { getX } from "./get-x";
 
-export class RenderedNodes extends HTMLElement {
-    constructor(){
-        super();
+export class RenderedNodes {
+    constructor(private childNodes:HTMLCollection){        
         this.getAll = this.getAll.bind(this);
         this.getHead = this.getHead.bind(this);
         this.getTail = this.getTail.bind(this);
@@ -10,13 +9,14 @@ export class RenderedNodes extends HTMLElement {
     }
     
     public get map() {
-        var map: Array<any> = [];
+        var map: Array<any> = [];        
         var nodes = this.childNodes;
         for (var i = 0; i < nodes.length; i++) {
             var node = <HTMLElement>nodes[i];
+            
             map.push({
                 left: getX(node) + node.offsetLeft,
-                node: node                
+                node: node
             });
         }
         return map;

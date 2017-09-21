@@ -19,16 +19,47 @@
             margin: 0;
             padding: 0;
         }
+
+        ce-carousel-container {
+            display: inline-block;
+            width: 99999999px;
+            -moz-transition: all .500s cubic-bezier(.10, .10, .25, .90);
+            -ms-transition: all .500s cubic-bezier(.10, .10, .25, .90);
+            -webkit-transition: all .500s cubic-bezier(.10, .10, .25, .90);
+            transition: all .500s cubic-bezier(.10, .10, .25, .90);
+        }
+
+        ce-carousel-container.notransition {
+            -webkit-transition: none;
+            -moz-transition: none;
+            -o-transition: none;
+            -ms-transition: none;
+            transition: none;
+        }
+
+        ce-carousel-viewport {
+            display: inline-block;
+            overflow-x: hidden;
+            max-width: 750px;
+            overflow-x: hidden;
+            background-color: #FFF;
+            position: relative;
+        }
+
     </style>
 </head>
 <body>
     <ce-carousel for="riding in ridings">
         <ce-carousel-viewport>
-            <div>Next</div>
-            <div>Previous</div>
             <ce-carousel-container>
                 <ce-carousel-item>
-                    <h1>Works?</h1>
+                    <h1>Quinntyne</h1>
+                </ce-carousel-item>
+                <ce-carousel-item>
+                    <h1>Olivia</h1>
+                </ce-carousel-item>
+                <ce-carousel-item>
+                    <h1>Vanessa</h1>
                 </ce-carousel-item>
             </ce-carousel-container>
         </ce-carousel-viewport>

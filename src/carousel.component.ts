@@ -1,10 +1,9 @@
-import { Renderer } from "./renderer";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
-
 import { translateX } from "./translate-x";
 import { getX } from "./get-x";
 import { CarouselContainerComponent } from "./carousel-container.component";
 import { CarouselViewportComponent } from "./carousel-viewport.component";
+import { RenderedNodes } from "./rendered-nodes";
 import "./carousel-item.component";
 
 const htmlTemplate = require("./carousel.component.html");
@@ -20,8 +19,9 @@ export class CarouselComponent extends HTMLElement {
         super();
         this.renderNext = this.renderNext.bind(this);
         this.renderPrevious = this.renderPrevious.bind(this);
-        this.render = this.render;
+        this._render = this._render;
         this.initialRender = this.initialRender;
+        this.renderedNodes = new RenderedNodes(this.containerHTMLElement.children);
     }
 
     private _for: string;
@@ -32,11 +32,20 @@ export class CarouselComponent extends HTMLElement {
         ];
     }
 
+    private renderedNodes: RenderedNodes;
+
     connectedCallback() {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(document.importNode(template.content, true));  
         this._bind();
         this._setEventListeners();
+        this._render();
+
+
+        setInterval(() => {
+
+            this.renderNext();
+        }, 3000);
     }
 
     public hasRendered: boolean = false;
@@ -49,7 +58,7 @@ export class CarouselComponent extends HTMLElement {
         });        
     }
 
-    public render (options: any) {
+    public _render () {
         if (!this.hasRendered) this.initialRender();
     }
 
@@ -69,20 +78,21 @@ export class CarouselComponent extends HTMLElement {
     private renderNext() {
         if (!this.inTransition) {
             this.inTransition = true;
-            var renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "desc" });
-            var numOfTransitions = renderedNodes.length;
-
+            
+            var renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "desc" });
+            var numOfTransitions = renderedNodes.length;                        
             for (var i = 0; i < renderedNodes.length; i++) {
                 var node = renderedNodes[i].node;
+                
                 translateX(renderedNodes[i].node, getX(renderedNodes[i].node) - this.lastViewPortWidth);
-
+                
                 renderedNodes[i].node.addEventListener(TRANSITION_END, () => {
                     numOfTransitions = numOfTransitions - 1;
 
                     if (numOfTransitions === 0) {
                         this.containerHTMLElement.turnOffTransitions();
 
-                        const renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "asc" });
+                        const renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
                         const node = renderedNodes[0].node;
                         const currentLeft = node.offsetLeft;
                         const desiredX = this.lastViewPortWidth * (this.itemsCount - 1);
@@ -106,7 +116,7 @@ export class CarouselComponent extends HTMLElement {
             this.inTransition = true;
             this.containerHTMLElement.turnOffTransitions();
 
-            const renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "desc" });
+            const renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "desc" });
             const tailRenderedNode = renderedNodes[0];
             const currentLeft = tailRenderedNode.node.offsetLeft;
             const desiredX = this.lastViewPortWidth * (-1);
@@ -116,7 +126,7 @@ export class CarouselComponent extends HTMLElement {
 
             setTimeout(() => {
                 this.containerHTMLElement.turnOnTransitions();
-                var renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "asc" });
+                var renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
                 for (var i = 0; i < renderedNodes.length; i++) {
                     var node = renderedNodes[i].node;
                     translateX(renderedNodes[i].node, getX(renderedNodes[i].node) + this.lastViewPortWidth);
