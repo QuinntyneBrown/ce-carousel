@@ -1,0 +1,19 @@
+{
+  "name": "ce-carousel",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "watch": "webpack --watch"
+  },
+  "private": true,
+  "dependencies": {
+    "@types/node": "6.0.60",
+    "awesome-typescript-loader": "3.2.3",
+    "html-loader": "0.5.1",
+    "live-server": "^1.2.0",
+    "raw-loader": "0.5.1",
+    "rxjs": "5.4.3",
+    "typescript": "2.5.2",
+    "webpack": "3.6.0"
+  }
+}
