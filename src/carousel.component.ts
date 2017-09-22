@@ -43,9 +43,17 @@ export class CarouselComponent extends HTMLElement {
 
 
         setInterval(() => {
-
+            console.log("WTF");
             this.renderNext();
         }, 3000);
+    }
+    
+    public turnOffTransitions() {
+        this.containerHTMLElement.classList.remove("notransition");
+    }
+
+    public turnOnTransitions() {
+        this.containerHTMLElement.classList.add("notransition");
     }
 
     public hasRendered: boolean = false;
@@ -86,11 +94,18 @@ export class CarouselComponent extends HTMLElement {
                 
                 translateX(renderedNodes[i].node, getX(renderedNodes[i].node) - this.lastViewPortWidth);
                 
-                renderedNodes[i].node.addEventListener(TRANSITION_END, () => {
+                renderedNodes[i].node.addEventListener("transitionend", () => {
+                    
                     numOfTransitions = numOfTransitions - 1;
-
+                    
                     if (numOfTransitions === 0) {
-                        this.containerHTMLElement.turnOffTransitions();
+                        
+                        this.turnOffTransitions();
+
+                        for (let q = 0; q < this.containerHTMLElement.children.length; q++) {
+                            var el = (this.containerHTMLElement.children[q] as HTMLElement);
+                            alert(getX(this.containerHTMLElement.children[q] as HTMLElement));
+                        }
 
                         const renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
                         const node = renderedNodes[0].node;
@@ -102,7 +117,7 @@ export class CarouselComponent extends HTMLElement {
 
                         setTimeout(() => {
                             this.inTransition = false;
-                            this.containerHTMLElement.turnOnTransitions();
+                            this.turnOnTransitions();
                         }, 0);
                     }
                 });
@@ -114,7 +129,7 @@ export class CarouselComponent extends HTMLElement {
     private renderPrevious() {
         if (!this.inTransition) {
             this.inTransition = true;
-            this.containerHTMLElement.turnOffTransitions();
+            this.turnOffTransitions();
 
             const renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "desc" });
             const tailRenderedNode = renderedNodes[0];
@@ -125,8 +140,10 @@ export class CarouselComponent extends HTMLElement {
             translateX(tailRenderedNode.node, delta);
 
             setTimeout(() => {
-                this.containerHTMLElement.turnOnTransitions();
+                this.turnOnTransitions();
                 var renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
+
+                
                 for (var i = 0; i < renderedNodes.length; i++) {
                     var node = renderedNodes[i].node;
                     translateX(renderedNodes[i].node, getX(renderedNodes[i].node) + this.lastViewPortWidth);
@@ -152,7 +169,7 @@ export class CarouselComponent extends HTMLElement {
         }
     }
 
-    public lastViewPortWidth: number = 0;
+    public get lastViewPortWidth(): number { return this.viewportHTMLElement.offsetWidth; }
 
     public inTransition: boolean = false;
 

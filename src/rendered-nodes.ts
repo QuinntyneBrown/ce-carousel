@@ -11,6 +11,7 @@ export class RenderedNodes {
     public get map() {
         var map: Array<any> = [];        
         var nodes = this.childNodes;
+        
         for (var i = 0; i < nodes.length; i++) {
             var node = <HTMLElement>nodes[i];
             

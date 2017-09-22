@@ -88,12 +88,6 @@
     </Content>
     <Content Include="src\carousel.component.html" />
     <Content Include="tsconfig.json" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
     <Content Include="src\carousel-item.component.html" />
     <Content Include="src\carousel-container.component.html" />
     <Content Include="src\carousel-viewport.component.html" />
