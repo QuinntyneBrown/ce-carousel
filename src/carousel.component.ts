@@ -12,7 +12,7 @@ const template = document.createElement("template");
 
 export const TRANSITION_END:string = "transitionend";
 
-template.innerHTML = `${htmlTemplate}<style>${styles}</style>`;
+template.innerHTML = `${htmlTemplate}`;
 
 export class CarouselComponent extends HTMLElement {
     constructor() {
@@ -41,19 +41,22 @@ export class CarouselComponent extends HTMLElement {
         this._setEventListeners();
         this._render();
 
-
-        setInterval(() => {
-            console.log("WTF");
-            this.renderNext();
-        }, 3000);
+        var styleNode = document.createElement("style");
+        styleNode.innerHTML = styles;
+        this.insertBefore(styleNode, this.childNodes[0]);
+        
+        setInterval(() => this.renderNext(), 3000);
+        
     }
     
-    public turnOffTransitions() {
-        this.containerHTMLElement.classList.remove("notransition");
+    public turnOnTransitions() {
+        if(this.containerHTMLElement.classList.contains("notransition"))
+            this.containerHTMLElement.classList.remove("notransition");
     }
 
-    public turnOnTransitions() {
-        this.containerHTMLElement.classList.add("notransition");
+    public turnOffTransitions() {
+        if (this.containerHTMLElement.classList.contains("notransition") == false)
+            this.containerHTMLElement.classList.add("notransition");
     }
 
     public hasRendered: boolean = false;
@@ -81,7 +84,7 @@ export class CarouselComponent extends HTMLElement {
         translateX(this.containerHTMLElement, 0);
     }
 
-    public itemsCount: number = 0;
+    public get itemsCount(): number { return this.containerHTMLElement.children.length; }
     
     private renderNext() {
         if (!this.inTransition) {
@@ -89,7 +92,7 @@ export class CarouselComponent extends HTMLElement {
             
             var renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "desc" });
             var numOfTransitions = renderedNodes.length;                        
-            for (var i = 0; i < renderedNodes.length; i++) {
+            for (let i = 0; i < renderedNodes.length; i++) {
                 var node = renderedNodes[i].node;
                 
                 translateX(renderedNodes[i].node, getX(renderedNodes[i].node) - this.lastViewPortWidth);
@@ -101,24 +104,21 @@ export class CarouselComponent extends HTMLElement {
                     if (numOfTransitions === 0) {
                         
                         this.turnOffTransitions();
-
-                        for (let q = 0; q < this.containerHTMLElement.children.length; q++) {
-                            var el = (this.containerHTMLElement.children[q] as HTMLElement);
-                            alert(getX(this.containerHTMLElement.children[q] as HTMLElement));
-                        }
-
+                        
                         const renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
                         const node = renderedNodes[0].node;
                         const currentLeft = node.offsetLeft;
                         const desiredX = this.lastViewPortWidth * (this.itemsCount - 1);
                         const delta = desiredX - currentLeft;
 
+                        console.log(delta);
+
                         translateX(node, delta);
 
                         setTimeout(() => {
                             this.inTransition = false;
                             this.turnOnTransitions();
-                        }, 0);
+                        }, 100);
                     }
                 });
             }
@@ -141,11 +141,10 @@ export class CarouselComponent extends HTMLElement {
 
             setTimeout(() => {
                 this.turnOnTransitions();
-                var renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
-
+                const renderedNodes = this.renderedNodes.getAll({ orientation: "horizontal", order: "asc" });
                 
-                for (var i = 0; i < renderedNodes.length; i++) {
-                    var node = renderedNodes[i].node;
+                for (let i = 0; i < renderedNodes.length; i++) {
+                    const node = renderedNodes[i].node;
                     translateX(renderedNodes[i].node, getX(renderedNodes[i].node) + this.lastViewPortWidth);
                 }
                 this.inTransition = false;
