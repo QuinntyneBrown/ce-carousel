@@ -1,6 +1,10 @@
 :host {
     display: inline-block;
-    width: 750px;
-    height: 400px;
-    background-color:cornflowerblue;
+    width: var(--viewport-width, 750px);
+    height: var(--viewport-height, 400px);
+    background-color: rgb(241,241,241);
+    -moz-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
+    -ms-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
+    -webkit-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
+    transition: transform .500s cubic-bezier(.10, .10, .25, .90);
 }

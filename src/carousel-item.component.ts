@@ -3,13 +3,9 @@ const template = document.createElement("template");
 const html = require("./carousel-item.component.html");
 const css = require("./carousel-item.component.css");
 
-export class CarouselItemComponent extends HTMLElement {
+export class CarouselItemContainerComponent extends HTMLElement {
     constructor() {
         super();
-    }
-
-    static get observedAttributes () {
-        return [];
     }
 
     async connectedCallback() {
@@ -20,30 +16,9 @@ export class CarouselItemComponent extends HTMLElement {
         this.shadowRoot.appendChild(document.importNode(template.content, true));  
 
         if (!this.hasAttribute('role'))
-            this.setAttribute('role', 'carouselitem');
-
-        this._bind();
-        this._setEventListeners();
+            this.setAttribute('role', 'carouselitem');        
     }
-
-    private async _bind() {
-
-    }
-
-    private _setEventListeners() {
-
-    }
-
-    disconnectedCallback() {
-
-    }
-
-    attributeChangedCallback (name, oldValue, newValue) {
-        switch (name) {
-            default:
-                break;
-        }
-    }
+    
 }
 
-customElements.define(`ce-carousel-item`,CarouselItemComponent);
+customElements.define(`ce-carousel-item`,CarouselItemContainerComponent);

@@ -1,7 +1,11 @@
 const template = document.createElement("template");
+const style = document.createElement("style");
 
 const html = require("./carousel-viewport.component.html");
 const css = require("./carousel-viewport.component.css");
+
+template.innerHTML = `${html}`;
+style.innerText = `${css}`;
 
 export class CarouselViewportComponent extends HTMLElement {
     constructor() {
@@ -14,8 +18,6 @@ export class CarouselViewportComponent extends HTMLElement {
 
     async connectedCallback() {
     
-        template.innerHTML = `<style>${css}</style>${html}`; 
-
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(document.importNode(template.content, true));  
 
@@ -24,6 +26,7 @@ export class CarouselViewportComponent extends HTMLElement {
 
         this._bind();
         this._setEventListeners();
+        this.insertBefore(style, this.childNodes[0]);
     }
 
     private async _bind() {

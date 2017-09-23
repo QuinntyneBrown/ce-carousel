@@ -1,28 +1,2 @@
-ce-carousel-container {
-    display: inline-block;
-    width: 99999999px;
-}
 
-ce-carousel-item {
-    -moz-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
-    -ms-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
-    -webkit-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
-    transition: transform .500s cubic-bezier(.10, .10, .25, .90);
-}
 
-ce-carousel-container.notransition ce-carousel-item {
-    -webkit-transition: none;
-    -moz-transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    transition: none;
-}
-
-ce-carousel-viewport {
-    display: inline-block;
-    overflow-x: hidden;
-    max-width: 750px;
-    overflow-x: hidden;
-    background-color: #FFF;
-    position: relative;
-}

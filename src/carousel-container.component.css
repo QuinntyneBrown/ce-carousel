@@ -1,0 +1,12 @@
+ce-carousel-container {
+    display: inline-block;
+    width: 99999999px;
+}
+
+ce-carousel-container.notransition ce-carousel-item {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -o-transition: none;
+    -ms-transition: none;
+    transition: none;
+}

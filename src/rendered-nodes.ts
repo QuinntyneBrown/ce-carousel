@@ -1,7 +1,8 @@
 ﻿import { getX } from "./get-x";
 
-export class RenderedNodes {
-    constructor(private childNodes:HTMLCollection){        
+export class RenderedNodes extends HTMLElement {
+    constructor() {        
+        super();
         this.getAll = this.getAll.bind(this);
         this.getHead = this.getHead.bind(this);
         this.getTail = this.getTail.bind(this);
@@ -10,7 +11,7 @@ export class RenderedNodes {
     
     public get map() {
         var map: Array<any> = [];        
-        var nodes = this.childNodes;
+        var nodes = this.querySelectorAll("ce-carousel-item");
         
         for (var i = 0; i < nodes.length; i++) {
             var node = <HTMLElement>nodes[i];
