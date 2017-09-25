@@ -16,34 +16,26 @@
     <style>
         body, html {
             font-family: Montserrat;
-            margin: 0;
+            margin: 20px;
             padding: 0;
-        }
-
-        .carousel-container {
-            width:750px;
-            height:400px;
-            --viewport-height:400px;
-            --viewport-width:400px;
+            background-color: rgb(241,241,241);
         }
     </style>
 </head>
 <body>
     <div class="carousel-container">
-        <ce-carousel carousel-height="400px" carousel-width="750px">
-            <ce-carousel-viewport>
-                <ce-carousel-container>
-                    <ce-carousel-item>
-                        <h1>Quinntyne</h1>
-                    </ce-carousel-item>
-                    <ce-carousel-item>
-                        <h1>Olivia</h1>
-                    </ce-carousel-item>
-                    <ce-carousel-item>
-                        <h1>Vanessa</h1>
-                    </ce-carousel-item>
-                </ce-carousel-container>
-            </ce-carousel-viewport>
+        <ce-carousel carousel-height="400px" carousel-width="750px">            
+            <ce-carousel-container slot="container">
+                <ce-carousel-item>
+                    <h1 slot="content">Quinntyne</h1>
+                </ce-carousel-item>
+                <ce-carousel-item>
+                    <h1 slot="content">Olivia</h1>
+                </ce-carousel-item>
+                <ce-carousel-item>
+                    <h1 slot="content">Vanessa</h1>
+                </ce-carousel-item>
+            </ce-carousel-container>            
         </ce-carousel>
     </div>
 

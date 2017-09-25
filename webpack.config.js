@@ -5,7 +5,9 @@ const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 module.exports = {
     devtool: 'source-map',
     entry: {
-        'ce-carousel': './src/carousel.component'
+        'ce-carousel': './src/carousel.component',
+        'ce-carousel-grid': './src/carousel-grid.component'
+
     },
     output: {
         path: __dirname + "/dist",

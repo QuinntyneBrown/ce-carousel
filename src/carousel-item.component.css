@@ -1,10 +1,16 @@
 :host {
     display: inline-block;
-    width: var(--viewport-width, 750px);
-    height: var(--viewport-height, 400px);
-    background-color: rgb(241,241,241);
+    width: var(--viewport-width);
+    height: var(--viewport-height);
+    background-color: #fff;
     -moz-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
     -ms-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
     -webkit-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
     transition: transform .500s cubic-bezier(.10, .10, .25, .90);
+}
+
+::slotted(h1) {
+    display: inline-block;
+    width: calc(100% - 40px);
+    margin: 20px 20px 20px 20px;
 }

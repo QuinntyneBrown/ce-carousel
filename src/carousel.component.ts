@@ -115,7 +115,7 @@ export class CarouselComponent extends HTMLElement {
         }
     }
     
-    public get lastViewPortWidth(): number { return (<HTMLElement>this.querySelector("ce-carousel-viewport")).offsetWidth; }
+    public get lastViewPortWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth; }
 
     public inTransition: boolean = false;
 
