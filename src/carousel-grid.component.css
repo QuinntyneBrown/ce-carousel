@@ -1,0 +1,13 @@
+:host {
+    display:block;
+}
+
+.carousel-container {
+    display:none;
+}
+
+@media (min-width: 800px) {
+    .carousel-container {
+        display:block;
+    }
+}
