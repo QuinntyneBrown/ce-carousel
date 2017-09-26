@@ -17,6 +17,8 @@ export class CarouselContainerComponent extends RenderedNodes {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot.appendChild(document.importNode(template.content, true));  
 
+        this.setAttribute("slot", "container");
+
         if (!this.hasAttribute('role'))
             this.setAttribute('role', 'carouselcontainer'); 
 
