@@ -13,7 +13,7 @@ export class CarouselComponent extends HTMLElement {
     constructor() {
         super();
         this._renderNext = this._renderNext.bind(this);
-        this.renderPrevious = this.renderPrevious.bind(this);        
+        this._renderPrevious = this._renderPrevious.bind(this);        
     }
 
     static get observedAttributes() {
@@ -30,6 +30,7 @@ export class CarouselComponent extends HTMLElement {
     connectedCallback() {
         this.attachShadow({ mode: 'open' });      
         this.bind();                
+        
         setInterval(() => this._renderNext(), 3000);
     }
 
@@ -47,73 +48,91 @@ export class CarouselComponent extends HTMLElement {
     }
 
     public currentIndex: number = 0;
-    
-    public get itemsCount(): number { return this.containerHTMLElement.querySelectorAll("ce-carousel-item").length; }
+
+    private _itemsCount = 0;
+
+    public get itemsCount(): number {
+        this._itemsCount = this._itemsCount || this.containerHTMLElement.childNodes.length;
+        return this._itemsCount;
+    }
     
     private _renderNext() {
         if (!this.inTransition) {
             this.inTransition = true;
             
-            const renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "desc" });
+            let pendingTransitons = this.itemsCount;
             
-            let numOfTransitions = renderedNodes.length;                        
-            for (let i = 0; i < renderedNodes.length; i++) {
-                var node = renderedNodes[i].node;
+            for (let i = 0; i < this.itemsCount; i++) {
+                var node = this.containerHTMLElement.childNodes[i] as HTMLElement;
                 
-                translateX(renderedNodes[i].node, getX(renderedNodes[i].node) - this.lastViewPortWidth);
+                translateX(node, getX(node) - this.viewPortWidth);
                 
-                renderedNodes[i].node.addEventListener(TRANSITION_END, () => {                    
-                    numOfTransitions = numOfTransitions - 1;                    
-                    if (numOfTransitions === 0) {
-                        
-                        this.containerHTMLElement.turnOffTransitions();
-                        
-                        const renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "asc" });
-                        const node = renderedNodes[0].node;
-                        const currentLeft = node.offsetLeft;
-                        const desiredX = this.lastViewPortWidth * (this.itemsCount - 1);
-                        const delta = desiredX - currentLeft;
-                        
-                        translateX(node, delta);
-
-                        setTimeout(() => {
-                            this.inTransition = false;
-                            this.containerHTMLElement.turnOnTransitions();
-                        }, 100);
-                    }
+                node.addEventListener(TRANSITION_END, () => {                    
+                    pendingTransitons = pendingTransitons - 1;                    
+                    if (pendingTransitons === 0)
+                        this.moveHeadToTailWithoutTransitions();                    
                 });
             }
             
         }
     }
 
-    private renderPrevious() {
+    private _renderPrevious() {
         if (!this.inTransition) {
             this.inTransition = true;
-            this.containerHTMLElement.turnOffTransitions();
+            
+            let pendingTransitions = this.itemsCount;
 
-            const renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "desc" });
-            const tailRenderedNode = renderedNodes[0];
-            const currentLeft = tailRenderedNode.node.offsetLeft;
-            const desiredX = this.lastViewPortWidth * (-1);
-            const delta = desiredX - currentLeft;
+            for (let i = 0; i < this.itemsCount; i++) {
+                var node = this.containerHTMLElement.childNodes[i] as HTMLElement;
 
-            translateX(tailRenderedNode.node, delta);
+                translateX(node, getX(node) + this.viewPortWidth);
 
-            setTimeout(() => {
-                this.containerHTMLElement.turnOnTransitions();
-                const renderedNodes = this.containerHTMLElement.getAll({ orientation: "horizontal", order: "asc" });
-                
-                for (let i = 0; i < renderedNodes.length; i++) {
-                    const node = renderedNodes[i].node;
-                    translateX(renderedNodes[i].node, getX(renderedNodes[i].node) + this.lastViewPortWidth);
-                }
-                this.inTransition = false;
-            }, 0);
+                node.addEventListener(TRANSITION_END, () => {
+                    pendingTransitions = pendingTransitions - 1;
+                    if (pendingTransitions === 0)
+                        this.moveTailToHeadWithoutTransitions();                    
+                });
+            }
+
         }
     }
-    
-    public get lastViewPortWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth; }
+
+    public moveWithoutTransitions(move) {
+        this.containerHTMLElement.turnOffTransitions();
+        move();
+        setTimeout(() => {
+            this.inTransition = false;
+            this.containerHTMLElement.turnOnTransitions();
+        }, 100);
+    }
+
+    public moveHeadToTailWithoutTransitions() {
+        this.moveWithoutTransitions(() => {
+            const node = this.containerHTMLElement.getHead().node;
+            const currentLeft = node.offsetLeft;
+            const desiredX = this.viewPortWidth * (this.itemsCount - 1);
+            const delta = desiredX - currentLeft;
+            translateX(node, delta);
+        });        
+    }
+
+    public moveTailToHeadWithoutTransitions() {
+        this.moveWithoutTransitions(() => {
+            const node = this.containerHTMLElement.getTail().node;
+            const currentLeft = node.offsetLeft;
+            const desiredX = this.viewPortWidth * -1;
+            const delta = desiredX - currentLeft;
+            translateX(node, delta);
+        });   
+    }
+
+    private _viewPortWidth: number = 0;
+
+    public get viewPortWidth(): number {
+        this._viewPortWidth = this._viewPortWidth || (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth;
+        return this._viewPortWidth;
+    }
 
     public inTransition: boolean = false;
 

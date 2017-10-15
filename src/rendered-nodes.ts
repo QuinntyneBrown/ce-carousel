@@ -9,19 +9,13 @@ export class RenderedNodes extends HTMLElement {
         this.getHeadAndTail = this.getHeadAndTail.bind(this);
     }
     
-    public get map() {
-        var map: Array<any> = [];        
-        var nodes = this.querySelectorAll("ce-carousel-item");
-        
-        for (var i = 0; i < nodes.length; i++) {
-            var node = <HTMLElement>nodes[i];
-            
-            map.push({
+    public get map() {        
+        return Array.from(this.childNodes).map((node:HTMLElement) => {
+            return {
                 left: getX(node) + node.offsetLeft,
                 node: node
-            });
-        }
-        return map;
+            };
+        });
     }
 
     public getAll(options: any) {
@@ -50,13 +44,13 @@ export class RenderedNodes extends HTMLElement {
     }
 
     public getHead() {
-        var map = this.getAll({ order: "asc" });
+        var map = this.getAll({ orientation: "horizontal", order: "asc" });
         if (map.length < 1) { return null; }
         return map[0];
     }
 
     public getTail() {
-        var map = this.getAll({ order: "desc" });
+        var map = this.getAll({ orientation: "horizontal", order: "desc" });
         if (map.length < 1) { return null; }
         return map[0];
     }
