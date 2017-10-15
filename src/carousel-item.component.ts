@@ -21,8 +21,7 @@ export class CarouselItemContainerComponent extends HTMLElement {
                     transition: transform .500s cubic-bezier(.10, .10, .25, .90);
                     border:none;
                     margin:0;
-                    padding:0;
-                    line-height:0;                    
+                    padding:0;                 
                 }
 
                 :host(.notransition) {
@@ -34,7 +33,7 @@ export class CarouselItemContainerComponent extends HTMLElement {
                 }
             </style>
 
-            <slot name="content"></slot>
+            <slot></slot>
         `, this.shadowRoot);
 
         if (!this.hasAttribute('role'))
