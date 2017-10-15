@@ -74,19 +74,7 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="package.json" />
-    <Content Include="src\carousel-grid.component.css">
-      <DependentUpon>carousel-grid.component.html</DependentUpon>
-    </Content>
-    <Content Include="src\carousel-item.component.css">
-      <DependentUpon>carousel-item.component.html</DependentUpon>
-    </Content>
-    <Content Include="src\carousel-viewport.component.css">
-      <DependentUpon>carousel-viewport.component.html</DependentUpon>
-    </Content>
     <Content Include="tsconfig.json" />
-    <Content Include="src\carousel-item.component.html" />
-    <Content Include="src\carousel-viewport.component.html" />
-    <Content Include="src\carousel-grid.component.html" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
@@ -99,15 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\carousel-container.component.ts" />
-    <TypeScriptCompile Include="src\carousel-grid.component.ts">
-      <DependentUpon>carousel-grid.component.html</DependentUpon>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\carousel-item.component.ts">
-      <DependentUpon>carousel-item.component.html</DependentUpon>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="src\carousel-viewport.component.ts">
-      <DependentUpon>carousel-viewport.component.html</DependentUpon>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\carousel-grid.component.ts" />
+    <TypeScriptCompile Include="src\carousel-item.component.ts" />
+    <TypeScriptCompile Include="src\carousel-viewport.component.ts" />
     <TypeScriptCompile Include="src\carousel.component.ts" />
     <TypeScriptCompile Include="src\get-x.ts" />
     <TypeScriptCompile Include="src\rendered-nodes.ts" />

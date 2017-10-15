@@ -1,8 +1,5 @@
 import "./carousel.component";
-
-const template = document.createElement("template");
-const html = require("./carousel-grid.component.html");
-const css = require("./carousel-grid.component.css");
+import { html, render } from "lit-html";
 
 export class CarouselGridComponent extends HTMLElement {
     constructor() {
@@ -15,10 +12,8 @@ export class CarouselGridComponent extends HTMLElement {
 
     async connectedCallback() {
     
-        template.innerHTML = `<style>${css}</style>${html}`; 
 
         this.attachShadow({ mode: 'open' });
-        this.shadowRoot.appendChild(document.importNode(template.content, true));  
 
         if (!this.hasAttribute('role'))
             this.setAttribute('role', 'carouselgrid');
@@ -28,7 +23,51 @@ export class CarouselGridComponent extends HTMLElement {
     }
 
     private async _bind() {
+        render(html`
+            <style>
+                :host {
+                    display:block;
+                }
 
+                .carousel-container {
+                    display:none;
+                }
+
+                @media (min-width: 800px) {
+                    .carousel-container {
+                        display:block;
+                    }
+                }
+            </style>
+            <div>
+                <h1>What?</h1>
+                <slot name="item">
+
+                </slot>
+
+                <slot name="item">
+
+                </slot>
+            </div>
+
+            <div class="carousel-container">
+                <ce-carousel carousel-height="400px" carousel-width="750px">
+                    <ce-carousel-viewport>
+                        <ce-carousel-container>
+                            <ce-carousel-item>
+                    
+                            </ce-carousel-item>
+                            <ce-carousel-item>
+                    
+                            </ce-carousel-item>
+                            <ce-carousel-item>
+                    
+                            </ce-carousel-item>
+                        </ce-carousel-container>
+                    </ce-carousel-viewport>
+                </ce-carousel>
+            </div>
+        `, this.shadowRoot);
     }
 
     private _setEventListeners() {
