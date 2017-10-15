@@ -10,10 +10,11 @@
     "@types/node": "6.0.60",
     "awesome-typescript-loader": "3.2.3",
     "html-loader": "0.5.1",
+    "lit-html": "0.7.1",
     "live-server": "^1.2.0",
     "raw-loader": "0.5.1",
     "rxjs": "5.4.3",
-    "typescript": "2.5.2",
+    "typescript": "2.6.0-rc",
     "webpack": "3.6.0"
   }
 }

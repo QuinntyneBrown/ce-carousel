@@ -1,3 +1,5 @@
+import { render, html } from "lit-html";
+
 const template = document.createElement("template");
 
 const html = require("./carousel-item.component.html");

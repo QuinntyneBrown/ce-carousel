@@ -5,15 +5,9 @@ import { translateX } from "./translate-x";
 import { getX } from "./get-x";
 import { CarouselContainerComponent } from "./carousel-container.component";
 import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { render, html } from "lit-html";
 
-const htmlTemplate = require("./carousel.component.html");
-const css = require("./carousel.component.css");
-const template = document.createElement("template");
-const style = document.createElement("style");
 const TRANSITION_END: string = "transitionend";
-
-template.innerHTML = `${htmlTemplate}`;
-style.innerText = `${css}`;
 
 export class CarouselComponent extends HTMLElement {
     constructor() {
@@ -34,18 +28,22 @@ export class CarouselComponent extends HTMLElement {
     public carouselWidth$: BehaviorSubject<string> = new BehaviorSubject("");
 
     connectedCallback() {
-        this.attachShadow({ mode: 'open' });
-        this.shadowRoot.appendChild(document.importNode(template.content, true));          
-        this.insertBefore(style, this.childNodes[0]);        
+        this.attachShadow({ mode: 'open' });      
         this.bind();                
+        setInterval(() => this._renderNext(), 3000);
     }
 
-    bind() {
-        this.carouselHeight$.subscribe(x => this.style.setProperty("--viewport-height",`${x}`));
+    bind() {        
+        render(html`
+            <ce-carousel-viewport>
+                <slot>
 
-        this.carouselWidth$.subscribe(x => this.style.setProperty("--viewport-width", `${x}`));
+                </slot>
+            </ce-carousel-viewport>
+        `, this.shadowRoot);
 
-        setInterval(() => this._renderNext(), 3000);
+        this.style.setProperty("--viewport-height", `${this.carouselHeight$.value}`);
+        this.style.setProperty("--viewport-width", `${this.carouselWidth$.value}`);        
     }
 
     public currentIndex: number = 0;
