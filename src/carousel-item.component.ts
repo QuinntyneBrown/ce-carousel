@@ -5,8 +5,7 @@ export class CarouselItemContainerComponent extends HTMLElement {
         super();
     }
 
-    connectedCallback() {
-    
+    connectedCallback() {    
         this.attachShadow({ mode: 'open' });
 
         render(html`
@@ -20,8 +19,11 @@ export class CarouselItemContainerComponent extends HTMLElement {
                     -ms-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
                     -webkit-transition: transform .500s cubic-bezier(.10, .10, .25, .90);
                     transition: transform .500s cubic-bezier(.10, .10, .25, .90);
+                    border:none;
+                    margin:0;
+                    padding:0;
+                    line-height:0;                    
                 }
-
 
                 :host(.notransition) {
                     -webkit-transition: none;
@@ -29,12 +31,6 @@ export class CarouselItemContainerComponent extends HTMLElement {
                     -o-transition: none;
                     -ms-transition: none;
                     transition: none;
-                }
-
-                ::slotted(h1) {
-                    display: inline-block;
-                    width: calc(100% - 40px);
-                    margin: 20px 20px 20px 20px;
                 }
             </style>
 

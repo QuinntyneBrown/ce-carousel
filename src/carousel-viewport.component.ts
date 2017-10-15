@@ -21,8 +21,7 @@ export class CarouselViewportComponent extends HTMLElement {
                 :host {
                     display: inline-block;
                     overflow-x: hidden;
-                    max-width: var(--viewport-width,750px);
-                    overflow-x: hidden;
+                    max-width: var(--viewport-width,750px);                    
                     background-color: #fff;
                     position: relative;
                 }

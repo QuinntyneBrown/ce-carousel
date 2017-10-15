@@ -24,6 +24,11 @@ export class CarouselContainerComponent extends RenderedNodes {
             </style>
             <slot></slot>
         `, this.shadowRoot);
+
+        for (var i = 0; i < this.childNodes.length; i++) {
+            if (this.childNodes[i].nodeType == 3)
+                this.childNodes[i].parentNode.removeChild(this.childNodes[i]);
+        }
     }   
 
     public turnOnTransitions() {        
