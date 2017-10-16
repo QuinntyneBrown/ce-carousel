@@ -1,8 +1,7 @@
 import { getX } from "./get-x";
-import { RenderedNodes } from "./rendered-nodes";
 import { render, html } from "lit-html";
 
-export class CarouselContainerComponent extends RenderedNodes {
+export class CarouselContainerComponent extends HTMLElement {
     constructor() {
         super();
     }

@@ -115,7 +115,12 @@ export class CarouselComponent extends HTMLElement {
 
     public moveHeadToTailWithoutTransitions() {
         this.moveWithoutTransitions(() => {
-            const node = this.containerHTMLElement.getHead().node;
+            const node = Array.from(this.containerHTMLElement.childNodes)
+                .map((x: HTMLElement) => {
+                    return { rect: x.getBoundingClientRect(), node: x };
+                })
+                .sort((a, b) => a.rect.left - b.rect.left)
+                .map(x => x.node)[0];                
             const currentLeft = node.offsetLeft;
             const desiredX = this.viewPortWidth * (this.itemsCount - 1);
             const delta = desiredX - currentLeft;
@@ -125,7 +130,12 @@ export class CarouselComponent extends HTMLElement {
 
     public moveTailToHeadWithoutTransitions() {
         this.moveWithoutTransitions(() => {
-            const node = this.containerHTMLElement.getTail().node;
+            const node = Array.from(this.containerHTMLElement.childNodes)
+                .map((x: HTMLElement) => {
+                    return { rect: x.getBoundingClientRect(), node: x };
+                })
+                .sort((a, b) =>  b.rect.left - a.rect.left)
+                .map(x => x.node)[0];
             const currentLeft = node.offsetLeft;
             const desiredX = this.viewPortWidth * -1;
             const delta = desiredX - currentLeft;
