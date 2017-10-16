@@ -5,29 +5,20 @@ export class CarouselViewportComponent extends HTMLElement {
         super();
     }
     
-    connectedCallback() {
-    
+    connectedCallback() {    
         this.attachShadow({ mode: 'open' });
 
-        if (!this.hasAttribute('role'))
-            this.setAttribute('role', 'carouselviewport');
-
-        this._bind();
-    }
-
-    private async _bind() {
         render(html`
             <style>
                 :host {
                     display: inline-block;
                     overflow-x: hidden;
-                    max-width: var(--viewport-width,750px);                    
-                    background-color: #fff;
+                    max-width: var(--viewport-width);                    
                     position: relative;
                 }
             </style>
             <slot></slot>
-        `,this.shadowRoot);
+        `, this.shadowRoot);
     }
 }
 

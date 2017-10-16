@@ -1,13 +1,11 @@
 ﻿const webpack = require('webpack');
 const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = {
     devtool: 'source-map',
     entry: {
-        'ce-carousel': './src/carousel.component',
-        'ce-carousel-grid': './src/carousel-grid.component'
-
+        'ce-carousel': './src/carousel.component'
     },
     output: {
         path: __dirname + "/dist",
@@ -15,16 +13,21 @@ module.exports = {
         publicPath: "dist/"
     },
     resolve: {
-        extensions: ['.ts', '.js', '.jpg', '.jpeg', '.gif', '.png', '.css', '.html']
+        extensions: ['.ts']
     },
     module: {
         loaders: [
-            { test: /\.css$/, loader: 'raw-loader' },
-            { test: /\.html$/, loaders: ['html-loader'] },
             { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ }
         ]
     },
     plugins: [
-        //new UglifyJsPlugin()
+        new Uglify({
+            uglifyOptions: {
+                output: {
+                    comments: false,
+                    beautify: false
+                }
+            }
+        })
     ]
 };

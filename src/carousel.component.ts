@@ -4,7 +4,6 @@ import "./carousel-viewport.component";
 import { translateX } from "./translate-x";
 import { getX } from "./get-x";
 import { CarouselContainerComponent } from "./carousel-container.component";
-import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { render, html } from "lit-html";
 
 const TRANSITION_END: string = "transitionend";
@@ -23,9 +22,9 @@ export class CarouselComponent extends HTMLElement {
         ];
     }
 
-    public carouselHeight$: BehaviorSubject<string> = new BehaviorSubject("");
+    public carouselHeight: string = "";
 
-    public carouselWidth$: BehaviorSubject<string> = new BehaviorSubject("");
+    public carouselWidth: string = "";
 
     connectedCallback() {
         this.attachShadow({ mode: 'open' });      
@@ -36,15 +35,18 @@ export class CarouselComponent extends HTMLElement {
 
     bind() {        
         render(html`
+            <style>
+                :host {
+                    --viewport-height: ${this.carouselHeight};
+                    --viewport-width: ${this.carouselWidth};
+                }
+            </style>
             <ce-carousel-viewport>
                 <slot>
 
                 </slot>
             </ce-carousel-viewport>
         `, this.shadowRoot);
-
-        this.style.setProperty("--viewport-height", `${this.carouselHeight$.value}`);
-        this.style.setProperty("--viewport-width", `${this.carouselWidth$.value}`);        
     }
 
     public currentIndex: number = 0;
@@ -141,14 +143,14 @@ export class CarouselComponent extends HTMLElement {
     attributeChangedCallback(name, oldValue, newValue) {
         switch (name) {
             case "carousel-height":
-                this.carouselHeight$.next(newValue);
+                this.carouselHeight = newValue;
                 break;
 
             case "carousel-width":
-                this.carouselWidth$.next(newValue);
+                this.carouselWidth = newValue;
                 break;
         }
     }
 }
 
-customElements.define(`ce-carousel`,CarouselComponent);
+customElements.define(`ce-carousel`, CarouselComponent);

@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\carousel-container.component.ts" />
-    <TypeScriptCompile Include="src\carousel-grid.component.ts" />
     <TypeScriptCompile Include="src\carousel-item.component.ts" />
     <TypeScriptCompile Include="src\carousel-viewport.component.ts" />
     <TypeScriptCompile Include="src\carousel.component.ts" />

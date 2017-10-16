@@ -8,47 +8,42 @@ export class CarouselContainerComponent extends RenderedNodes {
     }
 
     connectedCallback() {        
-        this.attachShadow({ mode: 'open' });
-        
-        if (!this.hasAttribute('role'))
-            this.setAttribute('role', 'carouselcontainer'); 
+        this.attachShadow({ mode: 'open' });        
+        Array.from(this.childNodes)
+            .filter(x => x.nodeType == 3)
+            .forEach(x => x.parentNode.removeChild(x));
+        this._bind();
+    }   
 
-        //TODO: css custom property. calculate width?
+    get carouselWidth() {
+        return Number(this.parentElement.getAttribute("carousel-width").replace("px", ""));        
+    }
 
+    _bind() {        
         render(html`
             <style>
                 :host {
                     display: inline-block;
-                    width: 99999999px;
+                    width: ${this.childNodes.length * this.carouselWidth}px;
                 }
             </style>
             <slot></slot>
         `, this.shadowRoot);
-
-        for (var i = 0; i < this.childNodes.length; i++) {
-            if (this.childNodes[i].nodeType == 3)
-                this.childNodes[i].parentNode.removeChild(this.childNodes[i]);
-        }
-    }   
+    }
 
     public turnOnTransitions() {        
         if (this.classList.contains("notransition"))
         {
             this.classList.remove("notransition");
-            for (var i = 0; i < this.children.length; i++) {
-                this.children[i].classList.remove("notransition")
-            }
+            Array.from(this.children).map(x => x.classList.remove("notransition"));
         }
     }
 
     public turnOffTransitions() {
-        if (this.classList.contains("notransition") == false) {
+        if (!this.classList.contains("notransition")) {
             this.classList.add("notransition");
-            for (var i = 0; i < this.children.length; i++) {
-                this.children[i].classList.add("notransition")
-            }
-        }
-            
+            Array.from(this.children).map(x => x.classList.add("notransition"));            
+        }            
     }
 }
 
