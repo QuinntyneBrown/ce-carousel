@@ -37,8 +37,12 @@ export class CarouselComponent extends HTMLElement {
         render(html`
             <style>
                 :host {
+                    display:inline-block;
+                    line-height:0px;                    
                     --viewport-height: ${this.carouselHeight};
                     --viewport-width: ${this.carouselWidth};
+                    width:100%;
+                    max-width:var(--viewport-width);
                 }
             </style>
             <ce-carousel-viewport>
