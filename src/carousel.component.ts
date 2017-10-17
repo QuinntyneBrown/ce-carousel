@@ -26,36 +26,36 @@ export class CarouselComponent extends HTMLElement {
         this._renderPrevious = this._renderPrevious.bind(this);        
     }
     
-    public get carouselHeight() { return this.getAttribute("carousel-height"); }
+    private get _height() { return this.getAttribute("carousel-height"); }
 
-    public get carouselWidth(): string { return this.getAttribute("carousel-width"); };
+    private get _width(): string { return this.getAttribute("carousel-width"); };
 
     connectedCallback() {
         this.attachShadow({ mode: 'open' });      
-        this.bind();                
+        this._bind();                
         
         setInterval(() => this._renderNext(), 3000);
     }
 
-    bind() {        
-        render(html`<style>:host {display:inline-block;line-height:0px;--viewport-height: ${this.carouselHeight};--viewport-width: ${this.carouselWidth};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`, this.shadowRoot);
+    private _bind() {        
+        render(html`<style>:host {display:inline-block;line-height:0px;--viewport-height: ${this._height};--viewport-width: ${this._width};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`, this.shadowRoot);
     }
     
     private _renderNext() {
-        if (!this.inTransition) {
-            this.inTransition = true;
+        if (!this._inTransition) {
+            this._inTransition = true;
             
-            let pendingTransitons = this.containerHTMLElement.childNodes.length;
+            let pendingTransitons = this._containerHTMLElement.childNodes.length;
             
-            for (let i = 0; i < this.containerHTMLElement.childNodes.length; i++) {
-                var node = this.containerHTMLElement.childNodes[i] as HTMLElement;
+            for (let i = 0; i < this._containerHTMLElement.childNodes.length; i++) {
+                var node = this._containerHTMLElement.childNodes[i] as HTMLElement;
                 
-                translateX(node, getX(node) - this.viewPortWidth);
+                translateX(node, getX(node) - this._viewportWidth);
                 
                 node.addEventListener(TRANSITION_END, () => {                    
                     pendingTransitons = pendingTransitons - 1;                    
                     if (pendingTransitons === 0)
-                        this.moveHeadToTailWithoutTransitions();                    
+                        this._moveHeadToTailWithoutTransitions();                    
                 });
             }
             
@@ -63,70 +63,70 @@ export class CarouselComponent extends HTMLElement {
     }
 
     private _renderPrevious() {
-        if (!this.inTransition) {
-            this.inTransition = true;
+        if (!this._inTransition) {
+            this._inTransition = true;
             
-            let pendingTransitions = this.containerHTMLElement.childNodes.length;
+            let pendingTransitions = this._containerHTMLElement.childNodes.length;
 
-            for (let i = 0; i < this.containerHTMLElement.childNodes.length; i++) {
-                var node = this.containerHTMLElement.childNodes[i] as HTMLElement;
+            for (let i = 0; i < this._containerHTMLElement.childNodes.length; i++) {
+                var node = this._containerHTMLElement.childNodes[i] as HTMLElement;
 
-                translateX(node, getX(node) + this.viewPortWidth);
+                translateX(node, getX(node) + this._viewportWidth);
 
                 node.addEventListener(TRANSITION_END, () => {
                     pendingTransitions = pendingTransitions - 1;
                     if (pendingTransitions === 0)
-                        this.moveTailToHeadWithoutTransitions();                    
+                        this._moveTailToHeadWithoutTransitions();                    
                 });
             }
 
         }
     }
 
-    public moveWithoutTransitions(move) {
-        this.containerHTMLElement.turnOffTransitions();
+    private _moveWithoutTransitions(move) {
+        Array.from(this._containerHTMLElement.children).map(x => x.classList.add("notransition"));
         move();
         setTimeout(() => {
-            this.inTransition = false;
-            this.containerHTMLElement.turnOnTransitions();
+            this._inTransition = false;
+            Array.from(this._containerHTMLElement.children).map(x => x.classList.remove("notransition"));
         }, 100);
     }
 
-    public moveHeadToTailWithoutTransitions() {
-        this.moveWithoutTransitions(() => {
-            const node = Array.from(this.containerHTMLElement.childNodes)
+    private _moveHeadToTailWithoutTransitions() {
+        this._moveWithoutTransitions(() => {
+            const node = Array.from(this._containerHTMLElement.childNodes)
                 .map((x: HTMLElement) => {
                     return { rect: x.getBoundingClientRect(), node: x };
                 })
                 .sort((a, b) => a.rect.left - b.rect.left)
                 .map(x => x.node)[0];                
             const currentLeft = node.offsetLeft;
-            const desiredX = this.viewPortWidth * (this.containerHTMLElement.childNodes.length - 1);
+            const desiredX = this._viewportWidth * (this._containerHTMLElement.childNodes.length - 1);
             const delta = desiredX - currentLeft;
             translateX(node, delta);
         });        
     }
 
-    public moveTailToHeadWithoutTransitions() {
-        this.moveWithoutTransitions(() => {
-            const node = Array.from(this.containerHTMLElement.childNodes)
+    private _moveTailToHeadWithoutTransitions() {
+        this._moveWithoutTransitions(() => {
+            const node = Array.from(this._containerHTMLElement.childNodes)
                 .map((x: HTMLElement) => {
                     return { rect: x.getBoundingClientRect(), node: x };
                 })
                 .sort((a, b) =>  b.rect.left - a.rect.left)
                 .map(x => x.node)[0];
             const currentLeft = node.offsetLeft;
-            const desiredX = this.viewPortWidth * -1;
+            const desiredX = this._viewportWidth * -1;
             const delta = desiredX - currentLeft;
             translateX(node, delta);
         });   
     }
     
-    public get viewPortWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth; }
+    private get _viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth; }
 
-    public inTransition: boolean = false;
+    private _inTransition: boolean = false;
 
-    public get containerHTMLElement(): CarouselContainerComponent { return this.querySelector("ce-carousel-container") as CarouselContainerComponent; };        
+    private get _containerHTMLElement(): CarouselContainerComponent { return this.querySelector("ce-carousel-container") as CarouselContainerComponent; };        
 }
 
 customElements.define(`ce-carousel`, CarouselComponent);
