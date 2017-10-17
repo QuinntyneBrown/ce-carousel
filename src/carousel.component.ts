@@ -1,12 +1,23 @@
 import "./carousel-item.component";
 import "./carousel-container.component";
 import "./carousel-viewport.component";
-import { translateX } from "./translate-x";
-import { getX } from "./get-x";
+
 import { CarouselContainerComponent } from "./carousel-container.component";
 import { render, html } from "lit-html";
 
 const TRANSITION_END: string = "transitionend";
+
+export var getX = (element: HTMLElement): number => {
+    const style = getComputedStyle(element);
+    const transform = style.transform;
+    const matrix = transform.match(/^matrix\((.+)\)$/);
+    return matrix ? parseFloat(matrix[1].split(', ')[4]) : 0;
+}
+
+export function translateX(element: HTMLElement, x: number) {
+    element.style.transform = `translateX(${x}px)`;
+    return element;
+}
 
 export class CarouselComponent extends HTMLElement {
     constructor() {
@@ -14,17 +25,10 @@ export class CarouselComponent extends HTMLElement {
         this._renderNext = this._renderNext.bind(this);
         this._renderPrevious = this._renderPrevious.bind(this);        
     }
+    
+    public get carouselHeight() { return this.getAttribute("carousel-height"); }
 
-    static get observedAttributes() {
-        return [
-            "carousel-height",
-            "carousel-width"
-        ];
-    }
-
-    public carouselHeight: string = "";
-
-    public carouselWidth: string = "";
+    public get carouselWidth(): string { return this.getAttribute("carousel-width"); };
 
     connectedCallback() {
         this.attachShadow({ mode: 'open' });      
@@ -34,41 +38,16 @@ export class CarouselComponent extends HTMLElement {
     }
 
     bind() {        
-        render(html`
-            <style>
-                :host {
-                    display:inline-block;
-                    line-height:0px;                    
-                    --viewport-height: ${this.carouselHeight};
-                    --viewport-width: ${this.carouselWidth};
-                    width:100%;
-                    max-width:var(--viewport-width);
-                }
-            </style>
-            <ce-carousel-viewport>
-                <slot>
-
-                </slot>
-            </ce-carousel-viewport>
-        `, this.shadowRoot);
-    }
-
-    public currentIndex: number = 0;
-
-    private _itemsCount = 0;
-
-    public get itemsCount(): number {
-        this._itemsCount = this._itemsCount || this.containerHTMLElement.childNodes.length;
-        return this._itemsCount;
+        render(html`<style>:host {display:inline-block;line-height:0px;--viewport-height: ${this.carouselHeight};--viewport-width: ${this.carouselWidth};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`, this.shadowRoot);
     }
     
     private _renderNext() {
         if (!this.inTransition) {
             this.inTransition = true;
             
-            let pendingTransitons = this.itemsCount;
+            let pendingTransitons = this.containerHTMLElement.childNodes.length;
             
-            for (let i = 0; i < this.itemsCount; i++) {
+            for (let i = 0; i < this.containerHTMLElement.childNodes.length; i++) {
                 var node = this.containerHTMLElement.childNodes[i] as HTMLElement;
                 
                 translateX(node, getX(node) - this.viewPortWidth);
@@ -87,9 +66,9 @@ export class CarouselComponent extends HTMLElement {
         if (!this.inTransition) {
             this.inTransition = true;
             
-            let pendingTransitions = this.itemsCount;
+            let pendingTransitions = this.containerHTMLElement.childNodes.length;
 
-            for (let i = 0; i < this.itemsCount; i++) {
+            for (let i = 0; i < this.containerHTMLElement.childNodes.length; i++) {
                 var node = this.containerHTMLElement.childNodes[i] as HTMLElement;
 
                 translateX(node, getX(node) + this.viewPortWidth);
@@ -122,7 +101,7 @@ export class CarouselComponent extends HTMLElement {
                 .sort((a, b) => a.rect.left - b.rect.left)
                 .map(x => x.node)[0];                
             const currentLeft = node.offsetLeft;
-            const desiredX = this.viewPortWidth * (this.itemsCount - 1);
+            const desiredX = this.viewPortWidth * (this.containerHTMLElement.childNodes.length - 1);
             const delta = desiredX - currentLeft;
             translateX(node, delta);
         });        
@@ -142,29 +121,12 @@ export class CarouselComponent extends HTMLElement {
             translateX(node, delta);
         });   
     }
-
-    private _viewPortWidth: number = 0;
-
-    public get viewPortWidth(): number {
-        this._viewPortWidth = this._viewPortWidth || (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth;
-        return this._viewPortWidth;
-    }
+    
+    public get viewPortWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).offsetWidth; }
 
     public inTransition: boolean = false;
 
-    public get containerHTMLElement(): CarouselContainerComponent { return this.querySelector("ce-carousel-container") as CarouselContainerComponent; };    
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name) {
-            case "carousel-height":
-                this.carouselHeight = newValue;
-                break;
-
-            case "carousel-width":
-                this.carouselWidth = newValue;
-                break;
-        }
-    }
+    public get containerHTMLElement(): CarouselContainerComponent { return this.querySelector("ce-carousel-container") as CarouselContainerComponent; };        
 }
 
 customElements.define(`ce-carousel`, CarouselComponent);

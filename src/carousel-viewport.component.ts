@@ -8,17 +8,7 @@ export class CarouselViewportComponent extends HTMLElement {
     connectedCallback() {    
         this.attachShadow({ mode: 'open' });
 
-        render(html`
-            <style>
-                :host {
-                    display: inline-block;
-                    overflow-x: hidden;
-                    max-width: var(--viewport-width);                    
-                    position: relative;
-                }
-            </style>
-            <slot></slot>
-        `, this.shadowRoot);
+        render(html`<style>:host {display:inline-block;overflow-x:hidden;max-width: var(--viewport-width);position:relative;}</style><slot></slot>`, this.shadowRoot);
     }
 }
 

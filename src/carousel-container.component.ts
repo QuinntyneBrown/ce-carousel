@@ -1,4 +1,3 @@
-import { getX } from "./get-x";
 import { render, html } from "lit-html";
 
 export class CarouselContainerComponent extends HTMLElement {
@@ -32,17 +31,11 @@ export class CarouselContainerComponent extends HTMLElement {
 
     public turnOnTransitions() {        
         if (this.classList.contains("notransition"))
-        {
-            this.classList.remove("notransition");
-            Array.from(this.children).map(x => x.classList.remove("notransition"));
-        }
+            [...Array.from(this.children), this].map(x => x.classList.remove("notransition"));
     }
 
     public turnOffTransitions() {
-        if (!this.classList.contains("notransition")) {
-            this.classList.add("notransition");
-            Array.from(this.children).map(x => x.classList.add("notransition"));            
-        }            
+        [...Array.from(this.children), this].map(x => x.classList.add("notransition"));            
     }
 }
 
