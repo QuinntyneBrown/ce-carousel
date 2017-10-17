@@ -18,20 +18,11 @@ export class CarouselContainerComponent extends HTMLElement {
     }
 
     _bind() {        
-        render(html`
-            <style>
-                :host {
-                    display: inline-block;
-                    width: ${this.childNodes.length * this.carouselWidth}px;
-                }
-            </style>
-            <slot></slot>
-        `, this.shadowRoot);
+        render(html`<style>:host {display: inline-block;width: ${this.childNodes.length * this.carouselWidth}px;}</style><slot></slot>`, this.shadowRoot);
     }
 
     public turnOnTransitions() {        
-        if (this.classList.contains("notransition"))
-            [...Array.from(this.children), this].map(x => x.classList.remove("notransition"));
+        [...Array.from(this.children), this].map(x => x.classList.remove("notransition"));
     }
 
     public turnOffTransitions() {
