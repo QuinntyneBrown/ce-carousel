@@ -26,6 +26,9 @@ module.exports = {
                 output: {
                     comments: false,
                     beautify: false
+                },
+                mangle: {
+                    eval: true,
                 }
             }
         })
