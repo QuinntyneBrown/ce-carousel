@@ -1,10 +1,6 @@
 import { render, html } from "lit-html";
 
-export class CarouselContainerComponent extends HTMLElement {
-    constructor() {
-        super();
-    }
-
+export class CarouselContainerComponent extends HTMLElement {    
     connectedCallback() {        
         this.attachShadow({ mode: 'open' });        
         Array.from(this.childNodes)

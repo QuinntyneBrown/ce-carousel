@@ -1,9 +1,8 @@
 import "./carousel-item.component";
 import "./carousel-container.component";
 import "./carousel-viewport.component";
-
 import { CarouselContainerComponent } from "./carousel-container.component";
-import { render, html } from "lit-html";
+import { render, html, TemplateResult } from "lit-html";
 
 const TRANSITION_END: string = "transitionend";
 
@@ -19,71 +18,73 @@ export function translateX(element: HTMLElement, x: number) {
     return element;
 }
 
-export class CarouselComponent extends HTMLElement {
+export abstract class LitComponent extends HTMLElement {        
+    render(template: TemplateResult): void {
+        render(template, this.shadowRoot);
+    }    
+}
+
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            derivedCtor.prototype[name] = baseCtor.prototype[name];
+        });
+    });
+}
+
+export class CarouselComponent extends HTMLElement implements LitComponent {
     constructor() {
         super();
-        this._renderNext = this._renderNext.bind(this);
+        this._next = this._next.bind(this);
     }
     
     private get _height() { return this.getAttribute("carousel-height"); }
 
     private get _width(): string { return this.getAttribute("carousel-width"); };
 
+    render: (templateResult: TemplateResult) => void;
+
     connectedCallback() {
         this.attachShadow({ mode: 'open' });      
-        this._bind();                
+        this.render(html`<style>:host {display:inline-block;line-height:0px;overflow-x: hidden;overflow-y: hidden;--viewport-height: ${this._height};--viewport-width: ${this._width};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`);                
         
-        setInterval(() => this._renderNext(), 3000);        
+        setInterval(() => this._next(), 3000);        
     }
     
-    private _bind() {        
-        render(html`<style>:host {display:inline-block;line-height:0px;overflow-x: hidden;overflow-y: hidden;--viewport-height: ${this._height};--viewport-width: ${this._width};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`, this.shadowRoot);
-    }
-    
-    private _renderNext() {
+    private _next() {
         if (!this._inTransition) {
             this._inTransition = true;
-            
+
             let pendingTransitons = this._containerHTMLElement.childNodes.length;
-            
-            for (let i = 0; i < this._containerHTMLElement.childNodes.length; i++) {
-                const node = this._containerHTMLElement.childNodes[i] as HTMLElement;
-                
+
+            Array.from(this._containerHTMLElement.childNodes).map((node:HTMLElement) => {
                 translateX(node, getX(node) - this._viewportWidth);
-                
-                node.addEventListener(TRANSITION_END, () => {                    
-                    pendingTransitons = pendingTransitons - 1;                    
-                    if (pendingTransitons === 0)
-                        this._moveHeadToTailWithoutTransitions();                    
+
+                node.addEventListener(TRANSITION_END, () => {
+                    pendingTransitons = pendingTransitons - 1;
+                    if (pendingTransitons === 0) {
+                        Array.from(this._containerHTMLElement.children).map(x => x.classList.add("notransition"));
+
+                        const node = Array.from(this._containerHTMLElement.childNodes)
+                            .map((x: HTMLElement) => {
+                                return { rect: x.getBoundingClientRect(), node: x };
+                            })
+                            .sort((a, b) => a.rect.left - b.rect.left)
+                            .map(x => x.node)[0];
+
+                        const currentLeft = node.offsetLeft;
+                        const desiredX = this._viewportWidth * (this._containerHTMLElement.childNodes.length - 1);
+                        const delta = desiredX - currentLeft;
+                        translateX(node, delta);
+
+                        setTimeout(() => {
+                            this._inTransition = false;
+                            Array.from(this._containerHTMLElement.children).map(x => x.classList.remove("notransition"));
+                        }, 100);
+                    }
                 });
-            }
-            
+            });                        
         }
-    }
-    
-    private _moveWithoutTransitions(move) {
-        Array.from(this._containerHTMLElement.children).map(x => x.classList.add("notransition"));
-        move();
-        setTimeout(() => {
-            this._inTransition = false;
-            Array.from(this._containerHTMLElement.children).map(x => x.classList.remove("notransition"));
-        }, 100);
-    }
-
-    private _moveHeadToTailWithoutTransitions() {
-        this._moveWithoutTransitions(() => {
-            const node = Array.from(this._containerHTMLElement.childNodes)
-                .map((x: HTMLElement) => {
-                    return { rect: x.getBoundingClientRect(), node: x };
-                })
-                .sort((a, b) => a.rect.left - b.rect.left)
-                .map(x => x.node)[0];
-
-            const currentLeft = node.offsetLeft;            
-            const desiredX = this._viewportWidth * (this._containerHTMLElement.childNodes.length - 1);
-            const delta = desiredX - currentLeft;
-            translateX(node, delta);
-        });        
     }
     
     private get _viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).getBoundingClientRect().width; }
@@ -92,5 +93,7 @@ export class CarouselComponent extends HTMLElement {
 
     private get _containerHTMLElement(): CarouselContainerComponent { return this.querySelector("ce-carousel-container") as CarouselContainerComponent; };        
 }
+
+applyMixins(CarouselComponent, [LitComponent]);
 
 customElements.define(`ce-carousel`, CarouselComponent);
