@@ -22,16 +22,15 @@ class CarouselComponent extends HTMLElement implements LitHTMLComponent {
     }
     
     private _next () {
-        if (this._inTransition) return;
+        if (this.slides.filter(x => x.classList.contains("notransition")).length) return;
         
-        let pendingTransitons = this.slides.length;
+        let pendingTransitons = this.slides.length - 1;
 
         this.slides.map((slide:HTMLElement) => {
             translateX(slide, getX(slide) - this._viewportWidth);
 
-            slide.addEventListener("transitionend", () => {
-                pendingTransitons = pendingTransitons - 1;
-                if (pendingTransitons === 0) {
+            slide.addEventListener("transitionend", () => {                
+                if (pendingTransitons-- === 0) {
                     this.slides.map(x => x.classList.add("notransition"));
 
                     const head = this.slides
@@ -47,7 +46,6 @@ class CarouselComponent extends HTMLElement implements LitHTMLComponent {
                     translateX(head, delta);
 
                     setTimeout(() => {
-                        this._inTransition = false;
                         this.slides.map(x => x.classList.remove("notransition"));
                     }, 100);
                 }
@@ -58,8 +56,6 @@ class CarouselComponent extends HTMLElement implements LitHTMLComponent {
     render: (templateResult: TemplateResult) => void;
 
     public get slides(): Array<HTMLElement> { return Array.from(this.querySelector("ce-carousel-container").childNodes) as Array<HTMLElement>; }
-    
-    private _inTransition: boolean = false;
     
     private get _height() { return this.getAttribute("carousel-height"); }
 
