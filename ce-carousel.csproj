@@ -90,6 +90,7 @@
     <TypeScriptCompile Include="src\carousel-item.component.ts" />
     <TypeScriptCompile Include="src\carousel-viewport.component.ts" />
     <TypeScriptCompile Include="src\carousel.component.ts" />
+    <TypeScriptCompile Include="src\lit-html.component.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

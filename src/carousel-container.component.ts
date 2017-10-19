@@ -1,21 +1,18 @@
-import { render, html } from "lit-html";
+import { render, html, TemplateResult } from "lit-html";
+import { LitHTMLComponent, define } from "./lit-html.component";
 
 export class CarouselContainerComponent extends HTMLElement {    
-    connectedCallback() {        
-        this.attachShadow({ mode: 'open' });        
+    connectedCallback() {            
         Array.from(this.childNodes)
             .filter(x => x.nodeType == 3)
             .forEach(x => x.parentNode.removeChild(x));
-        this._bind();
+
+        this.render(html`<style>:host {display: inline-block;width: ${this.childNodes.length * this.carouselWidth}px;}</style><slot></slot>`)
     }   
 
-    get carouselWidth() {
-        return Number(this.parentElement.getAttribute("carousel-width").replace("px", ""));        
-    }
-
-    _bind() {        
-        render(html`<style>:host {display: inline-block;width: ${this.childNodes.length * this.carouselWidth}px;}</style><slot></slot>`, this.shadowRoot);
-    }
+    get carouselWidth() { return Number(this.parentElement.getAttribute("carousel-width").replace("px", "")); }
+    
+    render: (templateResult: TemplateResult) => void;
 }
 
-customElements.define(`ce-carousel-container`,CarouselContainerComponent);
+define(`ce-carousel-container`,CarouselContainerComponent);
