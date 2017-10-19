@@ -52,39 +52,38 @@ export class CarouselComponent extends HTMLElement implements LitComponent {
     }
     
     private _next() {
-        if (!this._inTransition) {
-            this._inTransition = true;
+        if (this._inTransition) return;
+        
+        let pendingTransitons = this._containerHTMLElement.childNodes.length;
 
-            let pendingTransitons = this._containerHTMLElement.childNodes.length;
+        Array.from(this._containerHTMLElement.childNodes).map((node:HTMLElement) => {
+            translateX(node, getX(node) - this._viewportWidth);
 
-            Array.from(this._containerHTMLElement.childNodes).map((node:HTMLElement) => {
-                translateX(node, getX(node) - this._viewportWidth);
+            node.addEventListener(TRANSITION_END, () => {
+                pendingTransitons = pendingTransitons - 1;
+                if (pendingTransitons === 0) {
+                    Array.from(this._containerHTMLElement.children).map(x => x.classList.add("notransition"));
 
-                node.addEventListener(TRANSITION_END, () => {
-                    pendingTransitons = pendingTransitons - 1;
-                    if (pendingTransitons === 0) {
-                        Array.from(this._containerHTMLElement.children).map(x => x.classList.add("notransition"));
+                    const head = Array.from(this._containerHTMLElement.childNodes)
+                        .map((x: HTMLElement) => {
+                            return { rect: x.getBoundingClientRect(), node: x };
+                        })
+                        .sort((a, b) => a.rect.left - b.rect.left)
+                        .map(x => x.node)[0];
 
-                        const node = Array.from(this._containerHTMLElement.childNodes)
-                            .map((x: HTMLElement) => {
-                                return { rect: x.getBoundingClientRect(), node: x };
-                            })
-                            .sort((a, b) => a.rect.left - b.rect.left)
-                            .map(x => x.node)[0];
+                    const currentLeft = head.offsetLeft;
+                    const desiredX = this._viewportWidth * (this._containerHTMLElement.childNodes.length - 1);
+                    const delta = desiredX - currentLeft;
+                    translateX(head, delta);
 
-                        const currentLeft = node.offsetLeft;
-                        const desiredX = this._viewportWidth * (this._containerHTMLElement.childNodes.length - 1);
-                        const delta = desiredX - currentLeft;
-                        translateX(node, delta);
+                    setTimeout(() => {
+                        this._inTransition = false;
+                        Array.from(this._containerHTMLElement.children).map(x => x.classList.remove("notransition"));
+                    }, 100);
+                }
+            });
+        });                        
 
-                        setTimeout(() => {
-                            this._inTransition = false;
-                            Array.from(this._containerHTMLElement.children).map(x => x.classList.remove("notransition"));
-                        }, 100);
-                    }
-                });
-            });                        
-        }
     }
     
     private get _viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).getBoundingClientRect().width; }
