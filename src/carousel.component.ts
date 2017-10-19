@@ -4,21 +4,19 @@ import "./carousel-viewport.component";
 import { CarouselContainerComponent } from "./carousel-container.component";
 import { render, html, TemplateResult } from "lit-html";
 
-const TRANSITION_END: string = "transitionend";
-
-export var getX = (element: HTMLElement): number => {
+function getX(element: HTMLElement): number {
     const style = getComputedStyle(element);
     const transform = style.transform;
     const matrix = transform.match(/^matrix\((.+)\)$/);
     return matrix ? parseFloat(matrix[1].split(', ')[4]) : 0;
 }
 
-export function translateX(element: HTMLElement, x: number) {
+function translateX(element: HTMLElement, x: number) {
     element.style.transform = `translateX(${x}px)`;
     return element;
 }
 
-export abstract class LitComponent extends HTMLElement {        
+abstract class LitComponent extends HTMLElement {        
     render(template: TemplateResult): void {
         render(template, this.shadowRoot);
     }    
@@ -32,17 +30,11 @@ function applyMixins(derivedCtor: any, baseCtors: any[]) {
     });
 }
 
-export class CarouselComponent extends HTMLElement implements LitComponent {
+class CarouselComponent extends HTMLElement implements LitComponent {
     constructor() {
         super();
         this._next = this._next.bind(this);
     }
-    
-    private get _height() { return this.getAttribute("carousel-height"); }
-
-    private get _width(): string { return this.getAttribute("carousel-width"); };
-
-    render: (templateResult: TemplateResult) => void;
 
     connectedCallback() {
         this.attachShadow({ mode: 'open' });      
@@ -59,7 +51,7 @@ export class CarouselComponent extends HTMLElement implements LitComponent {
         Array.from(this._containerHTMLElement.childNodes).map((node:HTMLElement) => {
             translateX(node, getX(node) - this._viewportWidth);
 
-            node.addEventListener(TRANSITION_END, () => {
+            node.addEventListener("transitionend", () => {
                 pendingTransitons = pendingTransitons - 1;
                 if (pendingTransitons === 0) {
                     Array.from(this._containerHTMLElement.children).map(x => x.classList.add("notransition"));
@@ -85,12 +77,18 @@ export class CarouselComponent extends HTMLElement implements LitComponent {
         });                        
 
     }
-    
-    private get _viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).getBoundingClientRect().width; }
+
+    render: (templateResult: TemplateResult) => void;
 
     private _inTransition: boolean = false;
 
     private get _containerHTMLElement(): CarouselContainerComponent { return this.querySelector("ce-carousel-container") as CarouselContainerComponent; };        
+
+    private get _height() { return this.getAttribute("carousel-height"); }
+
+    private get _width(): string { return this.getAttribute("carousel-width"); };
+
+    private get _viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).getBoundingClientRect().width; }
 }
 
 applyMixins(CarouselComponent, [LitComponent]);
