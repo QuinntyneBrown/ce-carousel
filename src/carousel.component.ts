@@ -15,20 +15,13 @@ function translateX(element: HTMLElement, x: number) {
     element.style.transform = `translateX(${x}px)`;
 }
 
-
 class CarouselComponent extends HTMLElement implements LitHTMLComponent {
-    constructor() {
-        super();
-        this._next = this._next.bind(this);
-    }
-
     connectedCallback() {        
-        this.render(html`<style>:host {display:inline-block;line-height:0px;overflow-x: hidden;overflow-y: hidden;--viewport-height: ${this._height};--viewport-width: ${this._width};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`);                
-        
+        this.render(html`<style>:host {display:inline-block;line-height:0px;overflow-x: hidden;overflow-y: hidden;--viewport-height: ${this._height};--viewport-width: ${this._width};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`);                        
         setInterval(() => this._next(), 3000);        
     }
     
-    private _next() {
+    private _next () {
         if (this._inTransition) return;
         
         let pendingTransitons = this.slides.length;
