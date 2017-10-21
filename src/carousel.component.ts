@@ -2,7 +2,7 @@ import "./carousel-item.component";
 import "./carousel-container.component";
 import "./carousel-viewport.component";
 import { render, html, TemplateResult } from "lit-html";
-import { LitHTMLComponent, define } from "./lit-html.component";
+import { LitHTMLBehavior, define } from "./lit-html.behavior";
 
 function getX(element: HTMLElement): number {
     const style = getComputedStyle(element);
@@ -15,19 +15,20 @@ function translateX(element: HTMLElement, x: number) {
     element.style.transform = `translateX(${x}px)`;
 }
 
-class CarouselComponent extends HTMLElement implements LitHTMLComponent {
+class CarouselComponent extends HTMLElement implements LitHTMLBehavior {
     connectedCallback() {        
         this.render(html`<style>:host {display:inline-block;line-height:0px;overflow-x: hidden;overflow-y: hidden;--viewport-height: ${this._height};--viewport-width: ${this._width};width:100%;max-width:var(--viewport-width);}</style><ce-carousel-viewport><slot></slot></ce-carousel-viewport>`);                        
-        setInterval(() => this._next(), 3000);        
+        setInterval(() => this.next(), 3000);        
     }
     
-    private _next () {
+    public next () {
         if (this.slides.filter(x => x.classList.contains("notransition")).length) return;
         
         let pendingTransitons = this.slides.length - 1;
 
-        this.slides.map((slide:HTMLElement) => {
-            translateX(slide, getX(slide) - this._viewportWidth);
+        this.slides.map((slide: HTMLElement) => {
+
+            requestAnimationFrame(() => translateX(slide, getX(slide) - this.viewportWidth));
 
             slide.addEventListener("transitionend", () => {                
                 if (pendingTransitons-- === 0) {
@@ -40,20 +41,18 @@ class CarouselComponent extends HTMLElement implements LitHTMLComponent {
                         .sort((a, b) => a.rect.left - b.rect.left)
                         .map(x => x.node)[0];
 
-                    const currentLeft = head.offsetLeft;
-                    const desiredX = this._viewportWidth * (this.slides.length - 1);
-                    const delta = desiredX - currentLeft;
+                    const desiredX = this.viewportWidth * (this.slides.length - 1);
+                    const delta = desiredX - head.offsetLeft;
+
                     translateX(head, delta);
 
-                    setTimeout(() => {
-                        this.slides.map(x => x.classList.remove("notransition"));
-                    }, 100);
+                    setTimeout(() => this.slides.map(x => x.classList.remove("notransition")), 100);
                 }
             });
         });                        
     }
 
-    render: (templateResult: TemplateResult) => void;
+    render(templateResult: TemplateResult):void { /* LitHTMLBehavior */ };
 
     public get slides(): Array<HTMLElement> { return Array.from(this.querySelector("ce-carousel-container").childNodes) as Array<HTMLElement>; }
     
@@ -61,7 +60,7 @@ class CarouselComponent extends HTMLElement implements LitHTMLComponent {
 
     private get _width(): string { return this.getAttribute("carousel-width"); };
 
-    private get _viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).getBoundingClientRect().width; }
+    public get viewportWidth(): number { return (<HTMLElement>this.shadowRoot.querySelector("ce-carousel-viewport")).getBoundingClientRect().width; }
 }
 
 define(`ce-carousel`, CarouselComponent);

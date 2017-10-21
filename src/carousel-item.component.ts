@@ -1,7 +1,7 @@
 import { render, html, TemplateResult } from "lit-html";
-import { LitHTMLComponent, define } from "./lit-html.component";
+import { LitHTMLBehavior, define } from "./lit-html.behavior";
 
-export class CarouselItemContainerComponent extends HTMLElement implements LitHTMLComponent {    
+export class CarouselItemContainerComponent extends HTMLElement implements LitHTMLBehavior {    
     connectedCallback() {    
         this.render(html`<style>:host {display: inline-block;max-width: ${this._maxWidth}px;width:100%;height: var(--viewport-height);transition: transform .500s cubic-bezier(.10, .10, .25, .90);}:host(.notransition) {transition: none;}</style><slot></slot>`);    
     }    

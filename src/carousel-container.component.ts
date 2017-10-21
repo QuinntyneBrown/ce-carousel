@@ -1,5 +1,5 @@
 import { render, html, TemplateResult } from "lit-html";
-import { LitHTMLComponent, define } from "./lit-html.component";
+import { LitHTMLBehavior, define } from "./lit-html.behavior";
 
 export class CarouselContainerComponent extends HTMLElement {    
     connectedCallback() {            
