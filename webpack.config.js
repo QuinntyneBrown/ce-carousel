@@ -13,7 +13,7 @@ module.exports = {
         publicPath: "dist/"
     },
     resolve: {
-        extensions: ['.ts']
+        extensions: ['.ts','.js']
     },
     module: {
         loaders: [

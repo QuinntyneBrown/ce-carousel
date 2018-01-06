@@ -24,7 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.5</TypeScriptToolsVersion>
     <TypeScriptEmitDecoratorMetadata>true</TypeScriptEmitDecoratorMetadata>
     <TypeScriptModuleKind>commonjs</TypeScriptModuleKind>
     <TypeScriptExperimentalDecorators>True</TypeScriptExperimentalDecorators>
@@ -91,7 +91,7 @@
     <TypeScriptCompile Include="src\carousel-item.component.ts" />
     <TypeScriptCompile Include="src\carousel-viewport.component.ts" />
     <TypeScriptCompile Include="src\carousel.component.ts" />
-    <TypeScriptCompile Include="src\lit-html.component.ts" />
+    <TypeScriptCompile Include="src\lit-html.behavior.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

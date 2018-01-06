@@ -21,7 +21,7 @@ class CarouselComponent extends HTMLElement implements LitHTMLBehavior {
         setInterval(() => this.next(), 3000);        
     }
     
-    public next () {
+    public next() {
         if (this.slides.filter(x => x.classList.contains("notransition")).length) return;
         
         let pendingTransitons = this.slides.length - 1;
