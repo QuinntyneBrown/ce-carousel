@@ -1,5 +1,4 @@
 ﻿const webpack = require('webpack');
-const CommonsChunkPlugin = webpack.optimize.CommonsChunkPlugin;
 const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = {
