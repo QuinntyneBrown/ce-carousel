@@ -12,11 +12,12 @@ module.exports = {
         publicPath: "dist/"
     },
     resolve: {
-        extensions: ['.ts','.js']
+        extensions: ['.ts','.js','css']
     },
     module: {
         loaders: [
-            { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ }
+            { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
+            { test: /\.css$/, loaders: ['css-loader'], exclude: /node_modules/ }
         ]
     },
     plugins: [
