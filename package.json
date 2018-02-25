@@ -8,13 +8,13 @@
   "private": true,
   "dependencies": {
     "@types/node": "6.0.60",
-    "awesome-typescript-loader": "3.4.1",
-    "css-loader": "0.28.10",
-    "lit-html": "0.8.0",
+    "awesome-typescript-loader": "3.5.0",
+    "lit-html": "0.9.0",
     "live-server": "1.2.0",
     "rxjs": "5.5.6",
     "typescript": "2.7.2",
-    "uglifyjs-webpack-plugin": "1.1.6",
-    "webpack": "3.11.0"
+    "uglifyjs-webpack-plugin": "1.2.2",
+    "webpack": "4.0.0",
+    "webpack-cli": "^2.0.9"
   }
 }

@@ -2,6 +2,7 @@
 const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = {
+    mode: "production",
     devtool: 'source-map',
     entry: {
         'ce-carousel': './src/carousel.component'
@@ -12,25 +13,17 @@ module.exports = {
         publicPath: "dist/"
     },
     resolve: {
-        extensions: ['.ts','.js','css']
+        extensions: ['.ts','.js']
     },
     module: {
-        loaders: [
-            { test: /\.ts$/, loaders: ['awesome-typescript-loader'], exclude: /node_modules/ },
-            { test: /\.css$/, loaders: ['css-loader'], exclude: /node_modules/ }
+        rules: [
+            {
+                test: /\.ts$/,
+                loader: "awesome-typescript-loader"
+            }
         ]
     },
     plugins: [
-        new Uglify({
-            uglifyOptions: {
-                output: {
-                    comments: false,
-                    beautify: false
-                },
-                mangle: {
-                    eval: true,
-                }
-            }
-        })
+
     ]
 };
