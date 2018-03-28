@@ -3,7 +3,7 @@ import { LitHTMLBehavior, define } from "./lit-html.behavior";
 
 export class CarouselItemContainerComponent extends HTMLElement implements LitHTMLBehavior {    
     connectedCallback() {    
-        this.render(html`<style>:host {display: inline-block;max-width: ${this._maxWidth}px;width:100%;height: var(--viewport-height);transition: transform .500s cubic-bezier(.10, .10, .25, .90);}:host(.notransition) {transition: none;}</style><slot></slot>`);    
+        this.render(html`<style>:host {display: inline-block;max-width: ${this._maxWidth}px;width:100%;height: var(--viewport-height);transition: transform .75s cubic-bezier(0.42,0,0.58,1);}:host(.notransition) {transition: none;}</style><slot></slot>`);    
     }    
 
     private get _maxWidth() {
