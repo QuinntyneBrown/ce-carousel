@@ -48,7 +48,7 @@ class CarouselComponent extends HTMLElement implements LitHTMLBehavior {
 
                     setTimeout(() => this.slides.map(x => x.classList.remove("notransition")), 100);
                 }
-            });
+            }, { once: true });
         });                        
     }
 
